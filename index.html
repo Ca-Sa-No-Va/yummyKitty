@@ -688,14 +688,28 @@
     }
 
     .checkin-card {
-      border-radius: 28px;
-      overflow: hidden;
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      border-radius: 18px;
+      overflow: visible;
+      position: relative;
+      padding: 12px 12px 20px;
+      background: linear-gradient(180deg, #fff 0%, #fffafc 100%);
+      border: 1px solid rgba(255, 255, 255, 0.96);
+      box-shadow: 0 18px 40px rgba(139, 93, 101, 0.12), 0 2px 0 rgba(255, 255, 255, 0.9) inset;
+      transform: rotate(-0.6deg);
+      transition: transform 0.24s ease, box-shadow 0.24s ease;
+    }
+
+    .checkin-card:nth-child(2n) {
+      transform: rotate(0.5deg);
+    }
+
+    .checkin-card:nth-child(3n) {
+      transform: rotate(-0.25deg);
     }
 
     .checkin-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 42px rgba(255, 20, 147, 0.16);
+      transform: translateY(-6px) rotate(0deg);
+      box-shadow: 0 26px 56px rgba(139, 93, 101, 0.16);
     }
 
     .checkin-photo {
@@ -704,17 +718,20 @@
       object-fit: cover;
       display: block;
       background: #fff0f5;
-      border-bottom: 1px solid rgba(255, 20, 147, 0.16);
+      border-radius: 10px;
+      border: 1px solid rgba(139, 93, 101, 0.08);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.72);
     }
 
     .checkin-body {
-      padding: 16px;
+      padding: 14px 4px 0;
     }
 
     .checkin-food {
       margin: 0 0 6px;
-      color: var(--pink-hot);
-      font-size: 23px;
+      color: #9e2850;
+      font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-size: 22px;
       font-weight: 1000;
     }
 
@@ -1077,30 +1094,33 @@
     .brand-kicker {
       margin: 0 0 10px;
       color: #b83261;
+      font-family: "Trebuchet MS", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
       font-size: 12px;
-      font-weight: 1000;
-      letter-spacing: 0.14em;
+      font-weight: 900;
+      letter-spacing: 0.12em;
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.76);
     }
 
     .hero h1 {
-      font-size: clamp(44px, 7vw, 78px);
-      color: #a80f46;
-      line-height: 0.98;
-      font-weight: 1000;
+      font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      font-size: clamp(40px, 6.4vw, 70px);
+      color: #b83261;
+      line-height: 1.04;
+      font-weight: 900;
+      letter-spacing: 0;
       text-shadow:
-        0 2px 0 rgba(255, 255, 255, 0.88),
-        0 8px 22px rgba(255, 20, 147, 0.22);
-      -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.72);
-      paint-order: stroke fill;
+        0 1px 0 rgba(255, 255, 255, 0.92),
+        0 10px 28px rgba(255, 20, 147, 0.16);
+      -webkit-text-stroke: 0.45px rgba(255, 255, 255, 0.72);
     }
 
     .hero-subtitle {
       max-width: 560px;
       margin: 14px 0 0;
       color: rgba(75, 47, 52, 0.76);
+      font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
       font-size: clamp(15px, 2vw, 18px);
-      font-weight: 800;
+      font-weight: 700;
       line-height: 1.7;
     }
 
@@ -1287,20 +1307,20 @@
     }
 
     .checkin-card {
-      padding: 10px;
-      border-radius: 34px;
-      background: rgba(255, 255, 255, 0.72);
+      padding: 14px 14px 24px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 250, 252, 0.90));
       border-color: rgba(255, 255, 255, 0.90);
-      box-shadow: 0 24px 62px rgba(139, 93, 101, 0.13);
+      box-shadow: 0 26px 60px rgba(139, 93, 101, 0.14);
     }
 
     .checkin-card:hover {
-      transform: translateY(-8px) rotate(-0.5deg);
-      box-shadow: 0 34px 82px rgba(255, 20, 147, 0.18);
+      transform: translateY(-8px) rotate(0deg);
+      box-shadow: 0 34px 72px rgba(139, 93, 101, 0.18);
     }
 
     .checkin-photo {
-      border-radius: 26px;
+      border-radius: 12px;
       border-bottom: 0;
     }
 
@@ -1535,8 +1555,8 @@
     }
 
     @keyframes likeGlow {
-      0% { opacity: 0.62; transform: scale(0.66); }
-      100% { opacity: 0; transform: scale(1.5); }
+      0% { opacity: 0.58; transform: scale(0.82); }
+      100% { opacity: 0; transform: scale(1.28); }
     }
 
     .social-panel {
@@ -1551,24 +1571,28 @@
 
     .like-btn {
       width: fit-content;
-      padding: 9px 14px;
+      min-height: 36px;
+      padding: 8px 13px;
       border-radius: 999px;
-      color: var(--pink-hot);
-      background: rgba(255, 255, 255, 0.72);
-      border: 1px solid rgba(255, 20, 147, 0.22);
-      box-shadow: 0 10px 24px rgba(255, 20, 147, 0.10);
+      color: #b83261;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(184, 50, 97, 0.18);
+      box-shadow: 0 8px 20px rgba(139, 93, 101, 0.10);
       position: relative;
       overflow: visible;
       isolation: isolate;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       transform-origin: center;
       transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .like-btn.liked {
-      color: #fff;
-      background: linear-gradient(135deg, #ff1493, #e60012);
-      border-color: rgba(255, 255, 255, 0.68);
-      box-shadow: 0 14px 32px rgba(255, 20, 147, 0.24);
+      color: #9e2850;
+      background: linear-gradient(135deg, rgba(255, 232, 241, 0.98), rgba(255, 196, 219, 0.86));
+      border-color: rgba(184, 50, 97, 0.24);
+      box-shadow: 0 12px 26px rgba(184, 50, 97, 0.16);
     }
 
     .like-btn::after {
@@ -1577,7 +1601,7 @@
       inset: -6px;
       z-index: -1;
       border-radius: inherit;
-      background: radial-gradient(circle, rgba(255, 20, 147, 0.26), transparent 68%);
+      background: radial-gradient(circle, rgba(255, 196, 219, 0.46), transparent 68%);
       opacity: 0;
       transform: scale(0.72);
       pointer-events: none;
@@ -1587,21 +1611,26 @@
       animation: likeGlow 0.72s ease-out;
     }
 
+    .like-icon {
+      font-size: 15px;
+      line-height: 1;
+    }
+
     .like-count {
       display: inline-block;
       min-width: 1.1em;
       text-align: left;
     }
 
-    .like-float-heart {
+    .like-spark {
       position: absolute;
       left: 50%;
       top: 50%;
-      color: #ff1493;
-      font-size: 14px;
+      color: #ff8fbd;
+      font-size: 13px;
       font-weight: 1000;
       pointer-events: none;
-      text-shadow: 0 6px 16px rgba(255, 20, 147, 0.32);
+      text-shadow: 0 6px 16px rgba(184, 50, 97, 0.22);
       transform: translate(-50%, -50%);
     }
 
@@ -1740,8 +1769,13 @@
       }
 
       .hero h1 {
-        font-size: clamp(36px, 13vw, 54px);
-        line-height: 1.04;
+        font-size: clamp(32px, 11.4vw, 48px);
+        line-height: 1.08;
+        font-weight: 850;
+        text-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.9),
+          0 7px 18px rgba(255, 20, 147, 0.12);
+        -webkit-text-stroke: 0.25px rgba(255, 255, 255, 0.68);
       }
 
       .hero-subtitle {
@@ -2261,43 +2295,55 @@ using (bucket_id = 'food-photos');</pre>
 
       const count = button.querySelector(".like-count");
       const card = button.closest(".checkin-card");
-      const hearts = [];
+      const sparks = [];
 
-      for (let i = 0; i < 6; i++) {
-        const heart = document.createElement("span");
-        heart.className = "like-float-heart";
-        heart.textContent = "\u2665";
-        button.appendChild(heart);
-        hearts.push(heart);
+      for (let i = 0; i < 3; i++) {
+        const spark = document.createElement("span");
+        spark.className = "like-spark";
+        spark.textContent = i === 1 ? "\u22c6" : "\u2726";
+        button.appendChild(spark);
+        sparks.push(spark);
       }
 
       const likeTimeline = gsap.timeline()
-        .fromTo(button, { scale: 0.84 }, { scale: 1, duration: lowMotionMode ? 0.28 : 0.58, ease: "elastic.out(1, 0.45)" });
+        .fromTo(button, { scale: 0.92 }, { scale: 1, duration: lowMotionMode ? 0.24 : 0.46, ease: "elastic.out(1, 0.55)" });
 
       if (count) {
-        likeTimeline.fromTo(count, { y: 5, scale: 0.72, opacity: 0.4 }, { y: 0, scale: 1, opacity: 1, duration: 0.32, ease: "back.out(2)" }, "<");
+        likeTimeline.fromTo(count, { y: 4, scale: 0.82, opacity: 0.5 }, { y: 0, scale: 1, opacity: 1, duration: 0.28, ease: "back.out(1.8)" }, "<");
       }
 
       if (card && !lowMotionMode) {
-        gsap.fromTo(card, { y: -2 }, { y: 0, duration: 0.42, ease: "elastic.out(1, 0.55)" });
+        gsap.fromTo(card, { y: -3 }, { y: 0, duration: 0.38, ease: "elastic.out(1, 0.65)" });
       }
 
       if (lowMotionMode) {
-        hearts.forEach(heart => heart.remove());
+        sparks.forEach(spark => spark.remove());
         return;
       }
 
-      gsap.to(hearts, {
-        x: () => gsap.utils.random(-34, 34),
-        y: () => gsap.utils.random(-58, -30),
-        rotation: () => gsap.utils.random(-18, 18),
-        scale: () => gsap.utils.random(1.05, 1.5),
+      gsap.to(sparks, {
+        x: () => gsap.utils.random(-26, 26),
+        y: () => gsap.utils.random(-42, -24),
+        rotation: () => gsap.utils.random(-30, 30),
+        scale: () => gsap.utils.random(0.92, 1.28),
         opacity: 0,
-        duration: 0.82,
+        duration: 0.64,
         ease: "power3.out",
-        stagger: 0.035,
-        onComplete: () => hearts.forEach(heart => heart.remove())
+        stagger: 0.04,
+        onComplete: () => sparks.forEach(spark => spark.remove())
       });
+    }
+
+    function animateUnlike(button) {
+      if (!button || !hasGsap) return;
+
+      const count = button.querySelector(".like-count");
+      const timeline = gsap.timeline()
+        .fromTo(button, { scale: 1.04 }, { scale: 1, duration: lowMotionMode ? 0.18 : 0.32, ease: "power2.out" });
+
+      if (count) {
+        timeline.fromTo(count, { y: -3, opacity: 0.55 }, { y: 0, opacity: 1, duration: 0.22, ease: "power2.out" }, "<");
+      }
     }
 
     function updateTabIndicator(activeButton) {
@@ -2899,19 +2945,25 @@ using (bucket_id = 'food-photos');</pre>
           return;
         }
 
-        const likedIds = getLikedCheckins();
+        const likedMap = getLikedCheckinMap();
+        const liked = isCheckinLiked(checkin.id, likedMap);
         const likeCount = checkinLikes.filter(like => like.checkin_id === checkin.id).length;
         const likeBtn = document.createElement("button");
-        likeBtn.className = "like-btn" + (likedIds.includes(checkin.id) ? " liked" : "");
+        likeBtn.className = "like-btn" + (liked ? " liked" : "");
         likeBtn.type = "button";
         likeBtn.dataset.count = likeCount;
-        likeBtn.disabled = !isConfigured || likedIds.includes(checkin.id);
+        likeBtn.dataset.liked = liked ? "true" : "false";
+        likeBtn.dataset.likeId = getKnownLikeId(checkin.id, likedMap);
+        likeBtn.disabled = !isConfigured;
         likeBtn.addEventListener("click", () => likeCheckin(checkin.id, likeBtn));
 
+        const likeIcon = document.createElement("span");
+        likeIcon.className = "like-icon";
+        likeIcon.textContent = liked ? "\u2726" : "\u2661";
         const likeCountLabel = document.createElement("span");
         likeCountLabel.className = "like-count";
         likeCountLabel.textContent = likeCount;
-        likeBtn.textContent = "\u2665 ";
+        likeBtn.appendChild(likeIcon);
         likeBtn.appendChild(likeCountLabel);
 
         const comments = document.createElement("div");
@@ -3068,38 +3120,72 @@ using (bucket_id = 'food-photos');</pre>
       }
     }
 
-    function getLikedCheckins() {
+    function getLikedCheckinMap() {
       try {
-        return JSON.parse(localStorage.getItem("kitty-liked-checkins") || "[]");
+        const stored = JSON.parse(localStorage.getItem("kitty-liked-checkin-map") || "{}");
+        if (stored && typeof stored === "object" && !Array.isArray(stored)) return stored;
       } catch (error) {
-        return [];
       }
+
+      try {
+        const legacyIds = JSON.parse(localStorage.getItem("kitty-liked-checkins") || "[]");
+        if (Array.isArray(legacyIds)) {
+          return legacyIds.reduce((map, id) => {
+            map[id] = "";
+            return map;
+          }, {});
+        }
+      } catch (error) {
+      }
+
+      return {};
     }
 
-    function saveLikedCheckins(ids) {
-      localStorage.setItem("kitty-liked-checkins", JSON.stringify(ids));
+    function saveLikedCheckinMap(map) {
+      localStorage.setItem("kitty-liked-checkin-map", JSON.stringify(map));
+      localStorage.setItem("kitty-liked-checkins", JSON.stringify(Object.keys(map)));
+    }
+
+    function isCheckinLiked(checkinId, likedMap = getLikedCheckinMap()) {
+      return Object.prototype.hasOwnProperty.call(likedMap, checkinId);
+    }
+
+    function getKnownLikeId(checkinId, likedMap = getLikedCheckinMap()) {
+      if (likedMap[checkinId]) return likedMap[checkinId];
+      const matches = checkinLikes.filter(like => like.checkin_id === checkinId);
+      return matches.length === 1 ? matches[0].id : "";
+    }
+
+    function setLikeButtonState(button, liked, count) {
+      if (!button) return;
+      button.dataset.liked = liked ? "true" : "false";
+      button.dataset.count = count;
+      button.classList.toggle("liked", liked);
+      const icon = button.querySelector(".like-icon");
+      const label = button.querySelector(".like-count");
+      if (icon) icon.textContent = liked ? "\u2726" : "\u2661";
+      if (label) label.textContent = count;
     }
 
     async function likeCheckin(checkinId, button) {
-      const likedIds = getLikedCheckins();
-      if (likedIds.includes(checkinId)) {
-        showToast("这张卡片已经喜欢过啦");
+      const likedMap = getLikedCheckinMap();
+      if (isCheckinLiked(checkinId, likedMap)) {
+        await unlikeCheckin(checkinId, button, likedMap);
         return;
       }
 
+      if (button) button.disabled = true;
+
       try {
-        const { error } = await db.from("checkin_likes").insert({ checkin_id: checkinId });
+        const { data, error } = await db.from("checkin_likes").insert({ checkin_id: checkinId }).select("id").single();
         if (error) throw error;
-        likedIds.push(checkinId);
-        saveLikedCheckins(likedIds);
+        likedMap[checkinId] = data?.id || "";
+        saveLikedCheckinMap(likedMap);
 
         if (button) {
           const nextCount = Number(button.dataset.count || 0) + 1;
-          button.dataset.count = nextCount;
-          button.classList.add("liked");
-          button.disabled = true;
-          const count = button.querySelector(".like-count");
-          if (count) count.textContent = nextCount;
+          button.dataset.likeId = likedMap[checkinId];
+          setLikeButtonState(button, true, nextCount);
           animateLikeSuccess(button);
         }
 
@@ -3107,6 +3193,39 @@ using (bucket_id = 'food-photos');</pre>
         showToast("已喜欢这张美食卡片");
       } catch (error) {
         showToast(error.message || "点赞失败，请确认已运行新增 SQL");
+      } finally {
+        if (button) button.disabled = !isConfigured;
+      }
+    }
+
+    async function unlikeCheckin(checkinId, button, likedMap = getLikedCheckinMap()) {
+      const likeId = getKnownLikeId(checkinId, likedMap);
+      if (!likeId) {
+        showToast("旧点赞缺少记录，刷新后再试试");
+        return;
+      }
+
+      if (button) button.disabled = true;
+
+      try {
+        const { error } = await db.from("checkin_likes").delete().eq("id", likeId);
+        if (error) throw error;
+        delete likedMap[checkinId];
+        saveLikedCheckinMap(likedMap);
+
+        if (button) {
+          const nextCount = Math.max(0, Number(button.dataset.count || 0) - 1);
+          button.dataset.likeId = "";
+          setLikeButtonState(button, false, nextCount);
+          animateUnlike(button);
+        }
+
+        await loadSharedData(false);
+        showToast("已取消喜欢");
+      } catch (error) {
+        showToast(error.message || "取消点赞失败，请稍后再试");
+      } finally {
+        if (button) button.disabled = !isConfigured;
       }
     }
 
@@ -3570,6 +3689,6 @@ using (bucket_id = 'food-photos');</pre>
     } else if (canvas) {
       canvas.style.display = "none";
     }
-  </script>
+</script>
 </body>
 </html>
