@@ -1270,6 +1270,44 @@
       text-align: center;
     }
 
+    .hero-kitty-stage {
+      width: clamp(180px, 22vw, 270px);
+      margin: 0 auto clamp(12px, 2vw, 20px);
+      pointer-events: none;
+      transform-origin: center bottom;
+      will-change: opacity, transform;
+    }
+
+    .hero-kitty-stage img {
+      display: block;
+      width: 100%;
+      height: auto;
+      opacity: 0;
+      user-select: none;
+    }
+
+    .scroll-kitty-blend {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 2;
+      width: 220px;
+      pointer-events: none;
+      opacity: 0;
+      filter: blur(var(--scroll-kitty-blur, 0px));
+      transform: translate(-50%, -50%) rotate(0deg);
+      transform-origin: center;
+      will-change: left, top, width, opacity, transform, filter;
+    }
+
+    .scroll-kitty-blend img {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 18px 34px rgba(184, 50, 97, var(--scroll-kitty-shadow, 0.22))) saturate(var(--scroll-kitty-saturate, 1.08));
+      user-select: none;
+    }
+
     .hero-copy {
       min-width: 0;
       max-width: 720px;
@@ -1610,8 +1648,9 @@
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
-      opacity: 0.24;
+      opacity: var(--backdrop-kitty-opacity, 0);
       mix-blend-mode: normal;
+      will-change: opacity;
     }
 
     .fixed-kitty-backdrop img {
@@ -1904,7 +1943,7 @@
       }
 
       .fixed-kitty-backdrop {
-        opacity: 0.18;
+        opacity: var(--backdrop-kitty-opacity, 0);
       }
 
       .fixed-kitty-backdrop img {
@@ -2011,6 +2050,11 @@
         padding: 24px 18px 28px;
       }
 
+      .hero-kitty-stage {
+        width: clamp(142px, 48vw, 210px);
+        margin-bottom: 10px;
+      }
+
       .brand-kicker {
         font-size: 11px;
         letter-spacing: 0.09em;
@@ -2091,6 +2135,9 @@
   <div class="fixed-kitty-backdrop" aria-hidden="true">
     <img id="fixedKittyBackdrop" alt="">
   </div>
+  <div class="scroll-kitty-blend" id="scrollKittyBlend" aria-hidden="true">
+    <img id="scrollKittyImage" alt="">
+  </div>
   <div class="celebration-layer" id="celebrationLayer"></div>
   <div class="floating-heart heart-1">♥</div>
   <div class="floating-heart heart-2">♥</div>
@@ -2117,6 +2164,9 @@
     <header class="hero">
       <div class="hero-glow"></div>
       <div class="hero-content">
+        <div class="hero-kitty-stage" id="heroKittyStage" aria-hidden="true">
+          <img id="heroKittyImage" alt="">
+        </div>
         <div class="hero-copy">
           <p class="brand-kicker">HELLO KITTY DINING ATELIER</p>
           <h1>Kitty的美食记</h1>
@@ -2362,6 +2412,10 @@ using (bucket_id = 'food-photos');</pre>
     const cancelDrawBtn = document.getElementById("cancelDrawBtn");
     const drawRecordsEl = document.getElementById("drawRecords");
     const checkinFeed = document.getElementById("checkinFeed");
+    const heroKittyStage = document.getElementById("heroKittyStage");
+    const heroKittyImage = document.getElementById("heroKittyImage");
+    const scrollKittyBlend = document.getElementById("scrollKittyBlend");
+    const scrollKittyImage = document.getElementById("scrollKittyImage");
     const fixedKittyBackdrop = document.getElementById("fixedKittyBackdrop");
     const kittyLoader = document.getElementById("kittyLoader");
     const tabButtons = document.querySelectorAll(".tab-btn");
@@ -2382,9 +2436,62 @@ using (bucket_id = 'food-photos');</pre>
     const loaderMinDuration = 1200;
     let loaderHidden = false;
     let tiltBound = false;
+    let kittyBlendFrame = null;
 
     function afterNextPaint(callback) {
       requestAnimationFrame(() => requestAnimationFrame(callback));
+    }
+
+    function clamp01(value) {
+      return Math.max(0, Math.min(1, value));
+    }
+
+    function updateKittyBlend() {
+      kittyBlendFrame = null;
+      if (!heroKittyStage || !scrollKittyBlend) return;
+
+      const stageRect = heroKittyStage.getBoundingClientRect();
+      const backdropRect = fixedKittyBackdrop?.getBoundingClientRect();
+      const blendDistance = window.innerWidth <= 620
+        ? Math.max(160, Math.min(220, (window.innerHeight || 720) * 0.28))
+        : Math.max(220, Math.min(300, (window.innerHeight || 720) * 0.34));
+      const progress = clamp01(window.scrollY / blendDistance);
+      const eased = progress * progress * (3 - 2 * progress);
+      const earlyFade = clamp01(progress / 0.55);
+      const startX = stageRect.left + stageRect.width / 2;
+      const startY = stageRect.top + stageRect.height / 2;
+      const endX = window.innerWidth / 2;
+      const endY = window.innerHeight * (window.innerWidth <= 620 ? 0.50 : 0.52);
+      const startWidth = stageRect.width || 220;
+      const endWidth = backdropRect?.width || Math.min(window.innerWidth * 0.74, 860);
+      const currentX = lowMotionMode ? startX : startX + (endX - startX) * eased;
+      const currentY = lowMotionMode ? startY : startY + (endY - startY) * eased;
+      const currentWidth = lowMotionMode ? startWidth : startWidth + (endWidth - startWidth) * eased;
+      const rotate = lowMotionMode ? 0 : -4 * eased;
+      const blendOpacity = lowMotionMode
+        ? (window.scrollY > 24 ? 0 : 1)
+        : Math.max(0, 1 - progress * 1.8);
+      const backdropOpacity = lowMotionMode
+        ? (window.scrollY > 24 ? 0.18 : 0)
+        : Math.max(0, (progress - 0.18) / 0.82) * 0.18;
+      const blurAmount = lowMotionMode ? 0 : earlyFade * 10;
+      const shadowAlpha = lowMotionMode ? 0.16 : 0.22 - earlyFade * 0.14;
+      const saturateAmount = lowMotionMode ? 1 : 1.08 - earlyFade * 0.12;
+
+      document.documentElement.style.setProperty("--backdrop-kitty-opacity", backdropOpacity.toFixed(3));
+      scrollKittyBlend.style.left = `${currentX.toFixed(1)}px`;
+      scrollKittyBlend.style.top = `${currentY.toFixed(1)}px`;
+      scrollKittyBlend.style.width = `${currentWidth.toFixed(1)}px`;
+      scrollKittyBlend.style.opacity = blendOpacity.toFixed(3);
+      scrollKittyBlend.style.transform = `translate(-50%, -50%) rotate(${rotate.toFixed(2)}deg)`;
+      scrollKittyBlend.style.setProperty("--scroll-kitty-blur", `${blurAmount.toFixed(1)}px`);
+      scrollKittyBlend.style.setProperty("--scroll-kitty-shadow", shadowAlpha.toFixed(3));
+      scrollKittyBlend.style.setProperty("--scroll-kitty-saturate", saturateAmount.toFixed(3));
+    }
+
+    function scheduleKittyBlend() {
+      if (kittyBlendFrame !== null) return;
+      kittyBlendFrame = requestAnimationFrame(updateKittyBlend);
     }
 
     function hideKittyLoader() {
@@ -2535,7 +2642,7 @@ using (bucket_id = 'food-photos');</pre>
         ease: "power4.out"
       });
 
-      gsap.from([".brand-kicker", "h1", ".hero-subtitle", ".sync-pill"], {
+      gsap.from([".hero-kitty-stage", ".brand-kicker", "h1", ".hero-subtitle", ".sync-pill"], {
         y: 26,
         opacity: 0,
         duration: 0.86 * durationScale,
@@ -2988,7 +3095,10 @@ using (bucket_id = 'food-photos');</pre>
     }
 
     function renderAvatar() {
+      if (heroKittyImage) heroKittyImage.src = fixedKittyAvatar;
+      if (scrollKittyImage) scrollKittyImage.src = fixedKittyAvatar;
       if (fixedKittyBackdrop) fixedKittyBackdrop.src = fixedKittyAvatar;
+      updateKittyBlend();
     }
 
     function renderMenu() {
@@ -3792,11 +3902,15 @@ using (bucket_id = 'food-photos');</pre>
       if (event.key === "Escape") closeResultModal();
     });
 
+    window.addEventListener("scroll", scheduleKittyBlend, { passive: true });
+    window.addEventListener("resize", scheduleKittyBlend);
+
     if (ensureConfigured()) {
       loadSharedData();
       subscribeRealtime();
     }
 
+    scheduleKittyBlend();
     animateEntrance();
     updateTabIndicator(document.querySelector(".tab-btn.active"));
     startAmbientMotion();
