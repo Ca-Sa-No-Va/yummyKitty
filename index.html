@@ -1272,6 +1272,7 @@
 
     .hero-kitty-stage {
       width: clamp(180px, 22vw, 270px);
+      aspect-ratio: 1046 / 1277;
       margin: 0 auto clamp(12px, 2vw, 20px);
       pointer-events: none;
       transform-origin: center bottom;
@@ -1281,7 +1282,8 @@
     .hero-kitty-stage img {
       display: block;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: contain;
       opacity: 0;
       user-select: none;
     }
@@ -2451,6 +2453,9 @@ using (bucket_id = 'food-photos');</pre>
       if (!heroKittyStage || !scrollKittyBlend) return;
 
       const stageRect = heroKittyStage.getBoundingClientRect();
+      const kittyRatio = 1046 / 1277;
+      const stageWidth = stageRect.width || (window.innerWidth <= 620 ? Math.min(Math.max(window.innerWidth * 0.48, 142), 210) : 220);
+      const stageHeight = stageRect.height > 8 ? stageRect.height : stageWidth / kittyRatio;
       const backdropRect = fixedKittyBackdrop?.getBoundingClientRect();
       const blendDistance = window.innerWidth <= 620
         ? Math.max(160, Math.min(220, (window.innerHeight || 720) * 0.28))
@@ -2458,11 +2463,11 @@ using (bucket_id = 'food-photos');</pre>
       const progress = clamp01(window.scrollY / blendDistance);
       const eased = progress * progress * (3 - 2 * progress);
       const earlyFade = clamp01(progress / 0.55);
-      const startX = stageRect.left + stageRect.width / 2;
-      const startY = stageRect.top + stageRect.height / 2;
+      const startX = stageRect.left + stageWidth / 2;
+      const startY = stageRect.top + stageHeight / 2;
       const endX = window.innerWidth / 2;
       const endY = window.innerHeight * (window.innerWidth <= 620 ? 0.50 : 0.52);
-      const startWidth = stageRect.width || 220;
+      const startWidth = stageWidth || 220;
       const endWidth = backdropRect?.width || Math.min(window.innerWidth * 0.74, 860);
       const currentX = lowMotionMode ? startX : startX + (endX - startX) * eased;
       const currentY = lowMotionMode ? startY : startY + (endY - startY) * eased;
@@ -2492,6 +2497,11 @@ using (bucket_id = 'food-photos');</pre>
     function scheduleKittyBlend() {
       if (kittyBlendFrame !== null) return;
       kittyBlendFrame = requestAnimationFrame(updateKittyBlend);
+    }
+
+    function refreshKittyBlendAfterLayout() {
+      scheduleKittyBlend();
+      requestAnimationFrame(() => requestAnimationFrame(updateKittyBlend));
     }
 
     function hideKittyLoader() {
@@ -3098,7 +3108,7 @@ using (bucket_id = 'food-photos');</pre>
       if (heroKittyImage) heroKittyImage.src = fixedKittyAvatar;
       if (scrollKittyImage) scrollKittyImage.src = fixedKittyAvatar;
       if (fixedKittyBackdrop) fixedKittyBackdrop.src = fixedKittyAvatar;
-      updateKittyBlend();
+      refreshKittyBlendAfterLayout();
     }
 
     function renderMenu() {
@@ -3904,13 +3914,15 @@ using (bucket_id = 'food-photos');</pre>
 
     window.addEventListener("scroll", scheduleKittyBlend, { passive: true });
     window.addEventListener("resize", scheduleKittyBlend);
+    heroKittyImage?.addEventListener("load", refreshKittyBlendAfterLayout);
+    scrollKittyImage?.addEventListener("load", refreshKittyBlendAfterLayout);
 
     if (ensureConfigured()) {
       loadSharedData();
       subscribeRealtime();
     }
 
-    scheduleKittyBlend();
+    refreshKittyBlendAfterLayout();
     animateEntrance();
     updateTabIndicator(document.querySelector(".tab-btn.active"));
     startAmbientMotion();
