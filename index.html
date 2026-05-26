@@ -3629,6 +3629,13 @@
       .home-page .hero-copy::before {
         inset: -10px;
       }
+
+      body:not([data-current-tab="pageHome"]) .fixed-kitty-backdrop img {
+        left: 50%;
+        top: 50%;
+        width: min(112vw, 620px);
+        transform: translate3d(-50%, -50%, 0) rotate(-4deg) scale(1.04);
+      }
     }
 </style>
 </head>
@@ -4439,6 +4446,8 @@ using (bucket_id = 'food-photos');</pre>
       scrollKittyBlend.style.removeProperty("width");
       scrollKittyBlend.style.removeProperty("transform");
       scrollKittyBlend.style.removeProperty("transition");
+      scrollKittyBlend.style.removeProperty("transformOrigin");
+      if (hasGsap) gsap.set(scrollKittyBlend, { clearProps: "x,y,scale,rotation,transformOrigin" });
       scrollKittyBlend.style.removeProperty("--scroll-kitty-blur");
       scrollKittyBlend.style.removeProperty("--scroll-kitty-shadow");
       scrollKittyBlend.style.removeProperty("--scroll-kitty-saturate");
@@ -4458,14 +4467,8 @@ using (bucket_id = 'food-photos');</pre>
       const startWidth = stageRect.width || fallbackWidth;
       const startX = stageRect.left + startWidth / 2;
       const startY = stageRect.top + (stageRect.height || startWidth / (1046 / 1277)) / 2;
-      const endWidth = Math.min(Math.max(Math.min(window.innerWidth, window.innerHeight) * 0.78, 460), 900);
-      const endX = window.innerWidth / 2;
-      const endY = window.innerHeight * 0.52;
-      const deltaX = endX - startX;
-      const deltaY = endY - startY;
-      const endScale = endWidth / startWidth;
       const startTransform = "translate3d(-50%, -50%, 0) rotate(-3deg) scale(1)";
-      const endTransform = `translate3d(-50%, -50%, 0) translate3d(${deltaX.toFixed(1)}px, ${deltaY.toFixed(1)}px, 0) rotate(-4deg) scale(${endScale.toFixed(3)})`;
+      const endTransform = "translate3d(-50%, -50%, 0) rotate(-4deg) scale(0.94)";
 
       kittyRouteAnimating = true;
       document.body.classList.add("kitty-transitioning");
@@ -4491,9 +4494,9 @@ using (bucket_id = 'food-photos');</pre>
 
       if (hasGsap && !lowMotionMode) {
         gsap.to(scrollKittyBlend, {
-          opacity: 0.38,
+          opacity: 0,
           transform: endTransform,
-          duration: 0.46,
+          duration: 0.34,
           ease: "power3.out",
           force3D: true,
           transformOrigin: "center center",
@@ -4502,11 +4505,13 @@ using (bucket_id = 'food-photos');</pre>
       } else {
         requestAnimationFrame(() => {
           scrollKittyBlend.style.transition = "opacity 180ms ease, transform 220ms ease";
-          scrollKittyBlend.style.opacity = "0.36";
+          scrollKittyBlend.style.opacity = "0";
           scrollKittyBlend.style.transform = endTransform;
         });
-        kittyRouteTimer = setTimeout(finish, 260);
+        kittyRouteTimer = setTimeout(finish, 240);
       }
+
+      return true;
     }
 
     function switchTab(tabId) {
@@ -4514,34 +4519,43 @@ using (bucket_id = 'food-photos');</pre>
       const nextPage = document.getElementById(tabId);
       if (!nextPage) return;
 
-      runKittyRouteTransition(tabId);
-
-      tabPages.forEach(page => {
-        page.classList.toggle("active", page.id === tabId);
-      });
-      tabButtons.forEach(button => {
-        button.classList.toggle("active", button.dataset.tab === tabId);
-      });
-      document.body.dataset.currentTab = tabId;
-      updateTabIndicator(activeButton);
-      shiftAmbientScene(tabId);
-      refreshKittyBlendAfterLayout();
-
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "auto",
-      });
-
-      requestAnimationFrame(() => {
-        window.scrollTo(0, 0);
-        nextPage.classList.remove("feature-section-focus");
-        void nextPage.offsetWidth;
-        nextPage.classList.add("feature-section-focus");
-        requestAnimationFrame(() => {
-          animateList(`#${tabId} .home-entry-card, #${tabId} .menu-item, #${tabId} .draw-record, #${tabId} .checkin-card`);
+      const deferPageSwitch = runKittyRouteTransition(tabId);
+      const commitPageSwitch = () => {
+        tabPages.forEach(page => {
+          page.classList.toggle("active", page.id === tabId);
         });
-      });
+        tabButtons.forEach(button => {
+          button.classList.toggle("active", button.dataset.tab === tabId);
+        });
+        document.body.dataset.currentTab = tabId;
+        updateTabIndicator(activeButton);
+        shiftAmbientScene(tabId);
+        refreshKittyBlendAfterLayout();
+
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "auto",
+        });
+
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+          nextPage.classList.remove("feature-section-focus");
+          void nextPage.offsetWidth;
+          nextPage.classList.add("feature-section-focus");
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              animateList(`#${tabId} .home-entry-card, #${tabId} .menu-item, #${tabId} .draw-record, #${tabId} .checkin-card`);
+            });
+          });
+        });
+      };
+
+      if (deferPageSwitch) {
+        requestAnimationFrame(commitPageSwitch);
+      } else {
+        commitPageSwitch();
+      }
     }
 
     function showToast(message) {
